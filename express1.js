@@ -1,34 +1,39 @@
-import express from 'express'
-
-const app = express()
-
-
-app.use(function (req, res, next) {
-   console.log("middleware is running") ;
-   next() ;
-})
-app.use(function (req, res, next) {
-   console.log("middleware is one more time") ;
-   next() ;
-})
-app.get('/', (req, res) => {
-  res.send('Hello World')
-})
-app.get('/about', (req, res) => {
-  res.send('About Page of this website')
-})
-app.get('/product', (req, res,next) => {
-  return next(new Error('Something went wrong!'))
- }) ;
-
-app.use(function(err,req,res,next){
-    console.error(err.stack)
-    res.status(500).send('Something broke!')
-})
+const express = require('express');
+const app = express();
+const path = require('path');
 
 
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000')
+app.use(express.json());
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.set('view engine','ejs');
+
+
+app.get("/",function(req,res) {
+  res.render("index");
+
+
+
+});
+app.get("/profile/:username",function(req,res) {
+  
+  res.send('welcome,'+req.params.username);
+
+});
+app.get("/author/:username/product/:productname",function(req,res) {
+  res.send(`welcome,${req.params.username}! Your product is ${req.params.productname}`);
+});
+
+
+
+app.listen(3000,function(){
+  console.log("its running");
+
 })
+
 
 
